@@ -1,110 +1,137 @@
-#include<iostream>
+ï»¿#include <iostream>
+#include <string>
+#include <stack>
+#include <queue>
+
 using namespace std;
 
+//#####						3,3
+//#  ##						3,2	
+//# # #						3,1
+//#  P#						2,1
+//#####						1,1
 template<typename T>
 class Stack
 {
 public:
-	
+	Stack() {}
+	virtual ~Stack() {}
 
-	
-	T DataBase[10];
-	int Count = -1;
-	
-	void Push(T A) 
+	T Database[10];
+
+	int Cursor = -1;
+
+	void Push(T A)
 	{
-		DataBase[++Count]= A; // ÀüÀ§
+		Database[++Cursor] = A;
 	}
+
 	void Pop()
 	{
-		Count--;			// ÈÄÀ§ 
+		Cursor--;
 	}
-	int Top()
+
+	T Top()
 	{
-		return DataBase[Count];
+		return Database[Cursor];
 	}
-	
-
-public:
-
-	Stack()
-	{
-	
-	}
-	
-	~Stack() 
-	{
-
-	}
-
 };
-template <typename Q>
-class queue
+
+template<typename T>
+class Queue
 {
 public:
-	Q DataBase[10]; 
-	int Cursor; 
-	int begin;
-	
-	void QReturn()
+	Queue(int NewCapicity = 10)
 	{
-		begin = 0;
-	}
-	void Push(Q A)
-	{
-		DataBase[++Cursor] = A; // ÀüÀ§
-	}
-	Q Top()
-	{
-		return DataBase[begin++];
-	}
-	void pop()
-	{
-		for (int i = 0; i <9; ++i)
-		{
-			
-			Q temp;
-			temp = DataBase[i+1];
-			DataBase[i] = temp;
-			
-
-		}
-		--Cursor;
+		Capicity = NewCapicity;
+		Database = new int[Capicity];
+		Size = 0;
+		Front = 0;
+		Back = 0;
 	}
 
-	void Qout()
+	virtual ~Queue()
 	{
-		for (int i = 0; i < 10; ++i)
-		{
-			cout <<DataBase[i] << endl;
-		}
+		delete[] Database;
 	}
 
 public:
+	//Accessor
+	int GetSize() { return Size; }
+	int GetCapicity() { return Capicity; }
 
-	queue()
+	bool Push(int Data)
 	{
-		Cursor = -1;
-		begin = 0;
+		if (Size > Capicity)
+		{
+			return false;
+		}
+
+		Database[Back++] = Data;
+		Back = Back % Capicity;
+		Size++;
+
+		return true;
 	}
-	~queue()
-	{
 
+	T Pop()
+	{
+		if (Size <= 0)
+		{
+			return -1;
+		}
+
+		T Number = Database[Front++];
+		Front = Front % Capicity;
+
+		Size--;
+
+		return Number;
+	}
+
+protected:
+	T* Database;
+	int Capicity;
+	int Size;
+	int Front;
+	int Back;
+};
+
+template <typename T>
+class ChildQueue : public Queue<T>
+{
+public:
+	void Clear()
+	{
+		Queue::Size = 0;
 	}
 };
+
 
 int main()
 {
-	queue<int> A;
-	for (int i = 0; i < 10; ++i)
+
+	Queue<int> IntQueue(10000);
+
+
+	for (int i = 0; i < IntQueue.GetCapicity(); ++i)
 	{
-		A.Push(i);
+		IntQueue.Push(i);
 	}
 
-	A.pop();
-	A.Qout();
-	A.Push(30);
-	A.QReturn();
-	A.Qout();
+	cout << IntQueue.Pop() << endl;
+	cout << IntQueue.Pop() << endl;
+
+	//IntQueue.Clear();
+
+	IntQueue.Push(10);
+	IntQueue.Push(11);
+
+	while (IntQueue.GetSize() != 0)
+	{
+		cout << IntQueue.Pop() << endl;
+	}
+
 	return 0;
+
 }
